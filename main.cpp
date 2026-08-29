@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <memory>
 
 enum TokenType : uint8_t{
 	TOKEN_OP = 0,
@@ -22,6 +23,34 @@ struct Token{
 	TokenType type;
 	int value;
 };
+
+struct Node{
+	virtual ~Node() = default;
+	virtual int evaluate() const = 0;
+};
+
+struct NumNode : public Node{
+	int value;
+	NumNode(int val) : value(val){}
+
+	int evaluate() const override {return value;}
+};
+
+struct OpNode : public Node{
+	char op;
+	std::vector<std::unique_ptr<Node>> children;
+	OpNode(char operation) : op(operation){}
+
+	int evaluate() const override {
+		/*
+		 TODO:
+		 	- for thru an list of all child nodes asking them to evaluate themselves
+			- take all the integers from child nodes and use operator to return the value.
+					\-> recursion when child node is another operator.
+		 */
+	}
+};
+
 
 class Interpreter{
 	private:
@@ -73,6 +102,8 @@ class Interpreter{
 		}
 	  }
 
+	  // TODO: Create an Abstract Syntax Tree to evaluate the expression
+
 	  void interpret(){
 	  	tokenize();
 		printTokens();
@@ -81,7 +112,7 @@ class Interpreter{
 };
 
 int main(){
-	std::string code = "(+ 1 2)";
+	std::string code = "(+ 1 2(* 1 33))";
 	Interpreter myInterpreter(code);
 	myInterpreter.interpret();
 }

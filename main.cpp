@@ -42,12 +42,40 @@ struct OpNode : public Node{
 	OpNode(char operation) : op(operation){}
 
 	int evaluate() const override {
-		/*
-		 TODO:
-		 	- for thru an list of all child nodes asking them to evaluate themselves
-			- take all the integers from child nodes and use operator to return the value.
-					\-> recursion when child node is another operator.
-		 */
+
+		if(children.empty()) return 0;
+
+		switch(op){
+			case '+': {
+				int sum = 0;
+				for(const auto& c : children){
+					sum += c->evaluate();
+				}
+				return sum;
+			} case '-': {
+				int total = children[0]->evaluate();
+				for(size_t i=1; i<children.size(); ++i){
+					int next = children[i]->evaluate();
+					total -= next;
+				}
+				return total;
+			} case '/': {
+				int total = children[0]->evaluate();
+				for(size_t i = 1; i < children.size(); ++i){
+					int next = children[i]->evaluate();
+
+					// TODO: properly handle division by 0
+					if(next != 0) total /= next;
+				}
+				return total;
+			} case '*': {
+				int total = 1;
+				for(const auto& c : children) total *= c->evaluate();	
+				return total;
+
+			} default :
+				  return 0;
+		}
 	}
 };
 

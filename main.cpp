@@ -84,6 +84,7 @@ class Interpreter{
 	private:
 	  std::string source;
 	  std::vector<Token> tokens;
+	  int current_token = 0;
 
 	public:
 	  Interpreter(const std::string& text) : source(text){}
@@ -119,6 +120,25 @@ class Interpreter{
 			}
 		}
 	  }
+
+	  std::unique_ptr<Node> parse(){
+	  	if(current_token >= token.size()) return nullptr;
+
+		Token current = tokens[current_token++];
+
+		if(current.type == TOKEN_NUM) return std::make_unique<NumNode>(current.value);
+
+		if(current.type == TOKEN_PAREN && current.value == '('){
+			Token operatorToken = token[current_token++];
+			auto node = std::make_unique<OpNode>((char)opToken.value);
+			while(current_token < token.size() && !(tokens[current_token].type == TOKEN_PAREN && tokens[current_token].value == ')')){
+				node->children.push_back(parseExpression());
+			}
+			current_token++;
+			return node;
+		}
+		return nullptr;
+	  }
 	  
 	  void printTokens(){
 	  	for(const auto& t : tokens){
@@ -129,8 +149,6 @@ class Interpreter{
 			std::cout << "\n";
 		}
 	  }
-
-	  // TODO: Create an Abstract Syntax Tree to evaluate the expression
 
 	  void interpret(){
 	  	tokenize();

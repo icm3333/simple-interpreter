@@ -122,17 +122,17 @@ class Interpreter{
 	  }
 
 	  std::unique_ptr<Node> parse(){
-	  	if(current_token >= token.size()) return nullptr;
+	  	if(current_token >= tokens.size()) return nullptr;
 
 		Token current = tokens[current_token++];
 
 		if(current.type == TOKEN_NUM) return std::make_unique<NumNode>(current.value);
 
 		if(current.type == TOKEN_PAREN && current.value == '('){
-			Token operatorToken = token[current_token++];
-			auto node = std::make_unique<OpNode>((char)opToken.value);
-			while(current_token < token.size() && !(tokens[current_token].type == TOKEN_PAREN && tokens[current_token].value == ')')){
-				node->children.push_back(parseExpression());
+			Token operatorToken = tokens[current_token++];
+			auto node = std::make_unique<OpNode>((char)operatorToken.value);
+			while(current_token < tokens.size() && !(tokens[current_token].type == TOKEN_PAREN && tokens[current_token].value == ')')){
+				node->children.push_back(parse());
 			}
 			current_token++;
 			return node;
@@ -153,6 +153,15 @@ class Interpreter{
 	  void interpret(){
 	  	tokenize();
 		printTokens();
+		current_token = 0;
+
+		std::unique_ptr<Node> root = parse();
+
+		if(root){
+			std::cout << root ->evaluate() << "\n";
+		}else{
+			std::cout << "Error \n";
+		}
 	  }
 
 };

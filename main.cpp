@@ -1,10 +1,9 @@
 /*
-	Trying to build an interpreter for LISP Style (prefix notation) Simple arithmetic.
-
-	Steps to do this project:
-		- Lexical Analysis (Tokenizer)
-		- Syntactic Analysis (Parsing)
-		- Evaluation (Execution)
+	TODO:
+		- Error Handling
+		- Division by 0
+		- Negative Numbers
+		- Input Validation
 */
 
 #include <iostream>
@@ -167,7 +166,18 @@ class Interpreter{
 };
 
 int main(){
-	std::string code = "(+ 1 2(* 1 33))";
-	Interpreter myInterpreter(code);
-	myInterpreter.interpret();
+	std::string buffer;
+		
+	while(true){
+		std::cout << "> ";
+
+		if(!std::getline(std::cin, buffer)) break;
+		
+		Interpreter a(buffer);
+		a.interpret();
+
+		std::cout << "\n";	
+	}
+
+	return 0;
 }

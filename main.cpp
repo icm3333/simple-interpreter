@@ -2,7 +2,6 @@
 	TODO:
 		- Error Handling
 		- Division by 0
-		- Negative Numbers
 		- Input Validation
 */
 
@@ -93,7 +92,7 @@ class Interpreter{
 			char c = source[i];
 
 			if(c != ' '){
-				if(c >= '0' && c <= '9'){
+				if((c >= '0' && c <= '9') || (c == '-' && source[i+1] >= '0' && source[i+1] <= '9')){
 					// check future indexes till space or brackets.
 					int j = i;
 					while( j+1 < source.size() &&
